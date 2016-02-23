@@ -28,6 +28,12 @@ public class I2C_Encoder extends I2C_SensorBase {
 		return (double) requestRead(GET_TOTAL_ADDRESS, 4).getIntValue() / 10.0 - startValue;
 	}
 	
+	// NOTE: Only recodes the distance on ONE Encoder (a.k.a One Side)
+	//							 Inches	
+	public double getDistance(double radius) {
+		return getTotal() / TICKS_PER_REVOLUTION * radius * Math.PI * 2;
+	}
+	
 	public void reset() {
 		startValue = requestRead(GET_TOTAL_ADDRESS, 4).getIntValue() / 10.0;
 	} 
