@@ -1,4 +1,4 @@
-package org.aluminati3555.drive;
+package org.aluminati3555.control.motor;
 
 import edu.wpi.first.wpilibj.SpeedController;
 

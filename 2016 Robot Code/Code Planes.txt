@@ -28,7 +28,7 @@ Code:
 	    > Angler Movement about Base
 		> Locking Mechanism -> Pre-Match
 		> Distance Maintainer
-		> Vertical Extension
+		> Vertical Extension / Retract
   
 Complete:
 	 
@@ -55,6 +55,10 @@ Test:
   + Table
 	 - Saving Table
 	 - Loading Table
+	 
+  + Joystick Input
+     - Button Maps
+	 - Axis Maps
 	 
 Comment:
   + Vision Tracking

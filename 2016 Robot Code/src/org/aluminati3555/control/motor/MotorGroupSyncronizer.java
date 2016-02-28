@@ -1,4 +1,4 @@
-package org.aluminati3555.drive;
+package org.aluminati3555.control.motor;
 
 public class MotorGroupSyncronizer {
 	private MotorGroup[] groups;
