@@ -1,4 +1,6 @@
-package org.aluminati3555.sensors;
+package org.aluminati3555.I2C.sensors;
+
+import org.aluminati3555.I2C.I2C_SensorBase;
 
 public class I2C_Encoder extends I2C_SensorBase {
 	private static final int GET_TOTAL_ADDRESS = 0;

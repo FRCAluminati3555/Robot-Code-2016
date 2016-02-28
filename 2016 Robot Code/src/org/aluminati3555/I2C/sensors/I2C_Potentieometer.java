@@ -1,4 +1,6 @@
-package org.aluminati3555.sensors;
+package org.aluminati3555.I2C.sensors;
+
+import org.aluminati3555.I2C.I2C_SensorBase;
 
 public class I2C_Potentieometer extends I2C_SensorBase {
 	private static final double MIN_ANGLE = 0;

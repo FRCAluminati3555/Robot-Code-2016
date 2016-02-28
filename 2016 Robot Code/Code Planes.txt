@@ -1,0 +1,68 @@
+Code:
+  + Vision Tracking
+	 - Calculate Response Movements
+	 - Preform Post-Movement Check
+
+  + Motor Tables
+     - Add "Learning" Functions
+	 - Add Speed Mappings
+	    > Set-up Liner scale
+	    > Set-up Logarithmic scale
+	    > Set-up Exponential scale
+		
+  + Joystick Manager
+	 - Scale Mapping
+	 - Extraction of Motor associations
+	 
+  + Robot Structures
+	 - Drive Base
+	    > Main Drive
+	    > Lateral Drive
+		
+	 - Shooter
+	    > Loader Wheels
+		> Shooter Motors
+		> Shooter Power Calculations
+		
+	 - Arm
+	    > Angler Movement about Base
+		> Locking Mechanism -> Pre-Match
+		> Distance Maintainer
+		> Vertical Extension
+  
+Complete:
+	 
+Test:
+  + Vision Tracking
+	 - Image-type conversion
+	 - Particle Bounding Box Calculation
+	 
+  + Table
+     - Sliding Average
+	 
+  + Motor Groups
+  + Motor Group Synchronizer
+  
+  + BMP Image Loader 
+	 
+  + I2C
+     - Board
+	 - Sensors
+	    > Potentiometer
+	    > Encoder
+	    > Digital Input
+		
+  + Table
+	 - Saving Table
+	 - Loading Table
+	 
+Comment:
+  + Vision Tracking
+	 - Image Filtering
+	 
+  + File I/O
+     - File Saving
+	 - File Loading
+
+===================================================================================================================================================================
+Done:

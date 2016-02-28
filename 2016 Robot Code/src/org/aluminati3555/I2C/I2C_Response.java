@@ -1,4 +1,4 @@
-package org.aluminati3555.sensors;
+package org.aluminati3555.I2C;
 
 public class I2C_Response {
 	private byte[] readData;

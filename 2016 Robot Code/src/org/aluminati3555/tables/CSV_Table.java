@@ -1,9 +1,11 @@
-package org.aluminati3555.IO;
+package org.aluminati3555.tables;
 
 import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import org.aluminati3555.IO.File_IO;
 
 public class CSV_Table {
 	private ArrayList<Object[]> table;
@@ -76,4 +78,7 @@ public class CSV_Table {
 	public Object getElement(int row, int collumn) {
 		return table.get(row)[collumn];
 	}
+	
+	public Object[] getRow(int row) { return table.get(row); }
+	public int getNumberOfRows() { return table.size(); }
 }

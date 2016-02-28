@@ -1,4 +1,4 @@
-package org.aluminati3555.sensors;
+package org.aluminati3555.I2C;
 
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Timer;

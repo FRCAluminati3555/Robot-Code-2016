@@ -2,14 +2,14 @@ package org.aluminati3555.tables;
 
 import java.util.ArrayList;
 
-import org.aluminati3555.IO.CSV_Table;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class Table {
 	private static final int DECIMAL_PERCITION = 1;
 	private static final double DECIMAL_SHIFT = Math.pow(10, DECIMAL_PERCITION);
 	
 	private ArrayList<double[]> table;
-	private String[] keys;
+	private String[] keys;	// keys.length == Index of Average
 	private int averageCount;
 	
 	public Table(int averageCount, String... keys) {
@@ -19,7 +19,7 @@ public class Table {
 	
 	public double addValue(double value, double... keyValues) {
 		double[] row = getRow(keyValues);
-		row[keys.length + 1 + (int) row[row.length - 1] ++ % averageCount] = value; 
+		row[keys.length + (int) row[row.length - 1] ++ % averageCount] = value; 
 		return recalcAverage(row);
 	}
 	
@@ -27,13 +27,14 @@ public class Table {
 		double total = 0;
 		
 		for(int i = 0; i < averageCount; i ++)
-			total += row[keys.length + 1 + i];
+			total += row[keys.length + i];
 		total /= averageCount;
+		
 		return row[keys.length] = total;
 	}
 	
 	public double getAverage(double... keyValues) {
-		return getRow(keyValues)[keyValues.length];
+		return getRow(keyValues)[keys.length];
 	}
 	
 	public double[] getRow(double... keyValues) {
@@ -66,10 +67,26 @@ public class Table {
 		for(double key : keyValues) {
 			double shiftedKey = key * DECIMAL_SHIFT;
 			double decimalsLeft = shiftedKey % 1;
-			newKeys[index ++] = (double) ((int) shiftedKey) / DECIMAL_SHIFT + Math.round(decimalsLeft);
+			newKeys[index ++] = (double) ((int) shiftedKey + Math.round(decimalsLeft)) / DECIMAL_SHIFT;
 		}
 		
 		return newKeys;
+	}
+	
+	private void addRow(Object[] row) {
+		double[] doubleRow = new double[row.length];
+		int index = 0;
+		
+		for(Object object : row) {
+			if(object instanceof Double)
+				doubleRow[index ++] = ((Double) object).doubleValue();
+			else if(object instanceof String)
+				doubleRow[index ++] = Double.parseDouble((String) object);
+			else
+				DriverStation.reportError("Invalid Format for Table; Skipping value " + index, false); 
+		}
+		
+		table.add(doubleRow);
 	}
 	
 	public void save(String path) {
@@ -77,18 +94,23 @@ public class Table {
 		csv.saveTable(path);
 	}
 	
-	public static Table load(String path, int numOfKeys) {
-		Class<?>[] collumnCount = new Class<?>[keys.length];
-		for(int i = 0; i < keys.length; i ++)
-			collumnCount[i] = String.class;
-		CSV_Table csv = CSV_Table.loadTable(path, collumnTypes)
+	public void load(String path) { Table.load(path, this); }
+	
+	public static Table load(String path, Table table) {
+		Class<?>[] columnFormat = new Class<?>[table.keys.length + table.averageCount + 1];
+		for(int i = 0; i < columnFormat.length; i ++)
+			columnFormat[i] = String.class;
+		CSV_Table csv = CSV_Table.loadTable(path, columnFormat);
+		for(int i = 1; i < csv.getNumberOfRows(); i ++)
+			table.addRow(csv.getRow(i));
+		return table;
 	}
 	
 	public CSV_Table createCSV() {
-		Class<?>[] collumnCount = new Class<?>[keys.length];
-		for(int i = 0; i < keys.length; i ++)
-			collumnCount[i] = String.class;
-		CSV_Table table = new CSV_Table(collumnCount);
+		Class<?>[] columnFormat = new Class<?>[keys.length + averageCount + 1];
+		for(int i = 0; i < columnFormat.length; i ++)
+			columnFormat[i] = String.class;
+		CSV_Table table = new CSV_Table(columnFormat);
 		
 		table.addEntry((Object[]) keys);
 		for(double[] row : this.table) {
