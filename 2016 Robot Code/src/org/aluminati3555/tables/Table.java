@@ -2,6 +2,7 @@ package org.aluminati3555.tables;
 
 import java.util.ArrayList;
 
+import org.aluminati3555.IO.CSV_Table;
 
 public class Table {
 	private static final int DECIMAL_PERCITION = 1;
@@ -29,6 +30,10 @@ public class Table {
 			total += row[keys.length + 1 + i];
 		total /= averageCount;
 		return row[keys.length] = total;
+	}
+	
+	public double getAverage(double... keyValues) {
+		return getRow(keyValues)[keyValues.length];
 	}
 	
 	public double[] getRow(double... keyValues) {
@@ -65,5 +70,34 @@ public class Table {
 		}
 		
 		return newKeys;
+	}
+	
+	public void save(String path) {
+		CSV_Table csv = createCSV();
+		csv.saveTable(path);
+	}
+	
+	public static Table load(String path, int numOfKeys) {
+		Class<?>[] collumnCount = new Class<?>[keys.length];
+		for(int i = 0; i < keys.length; i ++)
+			collumnCount[i] = String.class;
+		CSV_Table csv = CSV_Table.loadTable(path, collumnTypes)
+	}
+	
+	public CSV_Table createCSV() {
+		Class<?>[] collumnCount = new Class<?>[keys.length];
+		for(int i = 0; i < keys.length; i ++)
+			collumnCount[i] = String.class;
+		CSV_Table table = new CSV_Table(collumnCount);
+		
+		table.addEntry((Object[]) keys);
+		for(double[] row : this.table) {
+			Object[] objectArray = new String[row.length];
+			for(int i = 0; i < row.length; i ++)
+				objectArray[i] = row[i] + "";
+			table.addEntry(objectArray);
+		}
+		
+		return table;
 	}
 }
