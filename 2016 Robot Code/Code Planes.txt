@@ -11,7 +11,6 @@ Code:
 	    > Set-up Exponential scale
 		
   + Joystick Manager
-	 - Scale Mapping
 	 - Extraction of Motor associations
 	 
   + Robot Structures
@@ -59,6 +58,9 @@ Test:
   + Joystick Input
      - Button Maps
 	 - Axis Maps
+	 
+  + Joystick Manager
+	 - Scale Mapping
 	 
 Comment:
   + Vision Tracking

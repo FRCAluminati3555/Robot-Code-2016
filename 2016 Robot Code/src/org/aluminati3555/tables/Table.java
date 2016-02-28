@@ -94,13 +94,18 @@ public class Table {
 		csv.saveTable(path);
 	}
 	
-	public void load(String path) { Table.load(path, this); }
+	public void load(String path) { 
+		Table t = Table.load(path, this); 
+		if(t != this)
+			DriverStation.reportError("Failed to Load: " + path, false);
+	}
 	
 	public static Table load(String path, Table table) {
 		Class<?>[] columnFormat = new Class<?>[table.keys.length + table.averageCount + 1];
 		for(int i = 0; i < columnFormat.length; i ++)
 			columnFormat[i] = String.class;
 		CSV_Table csv = CSV_Table.loadTable(path, columnFormat);
+		if(csv == null) return null;
 		for(int i = 1; i < csv.getNumberOfRows(); i ++)
 			table.addRow(csv.getRow(i));
 		return table;

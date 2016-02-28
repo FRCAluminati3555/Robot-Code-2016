@@ -45,6 +45,7 @@ public class CSV_Table {
 		CSV_Table table = new CSV_Table(collumnTypes);
 		
 		ByteBuffer buffer = File_IO.read(path);
+		if(buffer == null) return null;
 		byte[] data = buffer.array();
 		int offset = 0, length = 0;
 		
