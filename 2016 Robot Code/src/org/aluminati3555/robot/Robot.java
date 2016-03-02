@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Timer;
 public class Robot extends SampleRobot {
 
     public Robot() {
+    	
     }
 
     public void autonomous() {

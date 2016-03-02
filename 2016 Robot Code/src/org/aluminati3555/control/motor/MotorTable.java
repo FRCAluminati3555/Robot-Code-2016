@@ -2,12 +2,21 @@ package org.aluminati3555.control.motor;
 
 import org.aluminati3555.tables.Table;
 
+import edu.wpi.first.wpilibj.DriverStation;
+
 public class MotorTable {
 	private Table table;
 	private String path;
 	
-	public MotorTable(int averageCount, String path) {
-		this.table = new Table(averageCount, "Battery Voltage", "Value");
+	/**
+	 * Creates a new Motor Table and loads it into memory
+	 * 
+	 * @param averageCount
+	 * @param path
+	 * @param keys
+	 */
+	public MotorTable(int averageCount, String path, String... keys) {
+		this.table = new Table(averageCount, keys);
 		this.path = path; table.load(path);
 	}
 
@@ -20,5 +29,9 @@ public class MotorTable {
 	}
 
 	public void save() { table.save(path); }
-	public void load() { table.load(path); }
+	public MotorTable load() { table.load(path); return this; }
+	
+	public static double getVoltage() {
+		return DriverStation.getInstance().getBatteryVoltage();
+	}
 }

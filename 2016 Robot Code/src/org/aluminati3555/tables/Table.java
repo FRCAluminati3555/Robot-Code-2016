@@ -94,10 +94,11 @@ public class Table {
 		csv.saveTable(path);
 	}
 	
-	public void load(String path) { 
+	public Table load(String path) { 
 		Table t = Table.load(path, this); 
 		if(t != this)
 			DriverStation.reportError("Failed to Load: " + path, false);
+		return this;
 	}
 	
 	public static Table load(String path, Table table) {
