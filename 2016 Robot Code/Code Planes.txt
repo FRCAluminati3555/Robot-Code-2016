@@ -15,7 +15,6 @@ Code:
 	 
   + Robot Structures
 	 - Drive Base
-	    > Main Drive
 	    > Lateral Drive
 		
 	 - Shooter
@@ -31,6 +30,9 @@ Code:
   
   + General Logic Code
 Complete:
+  + Robot Structures
+	 - Drive Base
+	    > Main Drive
 	 
 Test:
   + Vision Tracking

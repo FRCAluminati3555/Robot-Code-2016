@@ -35,7 +35,10 @@ public class I2C_SensorBase {
     
     protected void postRegister() {}
     
-    protected static interface I2C_Request { public int id(); }
+    public static interface I2C_Request { 
+    	public int id();
+    	public int getBoardAddress();
+    }
     public static final class UnregisteredI2CException extends RuntimeException {
 		private static final long serialVersionUID = -5308586672027533658L;
     }

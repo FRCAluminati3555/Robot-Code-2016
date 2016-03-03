@@ -17,7 +17,8 @@ public class MotorGroup {
 		this.encoder = encoder;
 	}
 	
-	public double getSpeed() { return speed; }
+	public double getSpeedPercentage() { return speed; }
+	public double getSpeed() { return speed * groupTopSpeed; }
 	public void stop() { setSpeedPercentage(0); }
 	
 	public void setSpeedPercentage(double value) {

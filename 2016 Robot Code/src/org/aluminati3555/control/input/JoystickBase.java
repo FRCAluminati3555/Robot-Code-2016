@@ -7,15 +7,18 @@ import edu.wpi.first.wpilibj.Joystick;
 
 public abstract class JoystickBase {
 	private Joystick joystick;
+	private double deadzone;
 	
-	public JoystickBase(int inputIndex) {
+	public JoystickBase(int inputIndex, double deadzone) {
 		joystick = new Joystick(inputIndex);
+		this.deadzone = deadzone;
 	}
 	
 	public abstract double getValue(Axis axis);
 	
-	public double getRawValue(Axis axis) { 
-		return joystick.getRawAxis(axis.getIndex());
+	public final double getRawValue(Axis axis) { 
+		double rawValue = joystick.getRawAxis(axis.getIndex());
+		return Math.abs(rawValue) < deadzone ? 0 : rawValue;
 	}
 	
 	public boolean isButtonPressed(Button button) { 

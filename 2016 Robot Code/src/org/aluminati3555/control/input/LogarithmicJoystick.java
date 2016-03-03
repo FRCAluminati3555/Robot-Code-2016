@@ -3,8 +3,8 @@ package org.aluminati3555.control.input;
 import org.aluminati3555.control.input.JoysickMappings.Axis;
 
 public class LogarithmicJoystick extends JoystickBase {
-	public LogarithmicJoystick(int inputIndex) {
-		super(inputIndex);
+	public LogarithmicJoystick(int inputIndex, double deadzone) {
+		super(inputIndex, deadzone);
 	}
 
 	public double getValue(Axis axis) {
