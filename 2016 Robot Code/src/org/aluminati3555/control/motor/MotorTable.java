@@ -1,11 +1,11 @@
 package org.aluminati3555.control.motor;
 
-import org.aluminati3555.tables.Table;
+import org.aluminati3555.tables.AveragingTable;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class MotorTable {
-	private Table table;
+	private AveragingTable table;
 	private String path;
 	
 	/**
@@ -16,7 +16,7 @@ public class MotorTable {
 	 * @param keys
 	 */
 	public MotorTable(int averageCount, String path, String... keys) {
-		this.table = new Table(averageCount, keys);
+		this.table = new AveragingTable(averageCount, keys);
 		this.path = path; table.load(path);
 	}
 

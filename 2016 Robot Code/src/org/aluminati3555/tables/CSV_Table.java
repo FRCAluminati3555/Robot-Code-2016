@@ -41,9 +41,7 @@ public class CSV_Table {
 		File_IO.write(path, false, strings);
 	}
 	
-	public static CSV_Table loadTable(String path, Class<?>... collumnTypes) {
-		CSV_Table table = new CSV_Table(collumnTypes);
-		
+	public CSV_Table load(String path) {
 		ByteBuffer buffer = File_IO.read(path);
 		if(buffer == null) return null;
 		byte[] data = buffer.array();
@@ -70,10 +68,15 @@ public class CSV_Table {
 						InvocationTargetException | NoSuchMethodException | SecurityException e) {}
 			}
 			
-			table.table.add(rowElements);
+			table.add(rowElements);
 		}
 		
-		return table;
+		return this;
+	}
+	
+	public static CSV_Table loadTable(String path, Class<?>... collumnTypes) {
+		CSV_Table table = new CSV_Table(collumnTypes);
+		return table.load(path);
 	}
 	
 	public Object getElement(int row, int collumn) {

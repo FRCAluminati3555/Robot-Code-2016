@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
-public class Table {
+public class AveragingTable {
 	private static final int DECIMAL_PERCITION = 1;
 	private static final double DECIMAL_SHIFT = Math.pow(10, DECIMAL_PERCITION);
 	
@@ -12,7 +12,7 @@ public class Table {
 	private String[] keys;	// keys.length == Index of Average
 	private int averageCount;
 	
-	public Table(int averageCount, String... keys) {
+	public AveragingTable(int averageCount, String... keys) {
 		this.keys = keys; this.averageCount = averageCount;
 		table = new ArrayList<>();
 	}
@@ -94,14 +94,14 @@ public class Table {
 		csv.saveTable(path);
 	}
 	
-	public Table load(String path) { 
-		Table t = Table.load(path, this); 
+	public AveragingTable load(String path) { 
+		AveragingTable t = AveragingTable.load(path, this); 
 		if(t != this)
 			DriverStation.reportError("Failed to Load: " + path, false);
 		return this;
 	}
 	
-	public static Table load(String path, Table table) {
+	public static AveragingTable load(String path, AveragingTable table) {
 		Class<?>[] columnFormat = new Class<?>[table.keys.length + table.averageCount + 1];
 		for(int i = 0; i < columnFormat.length; i ++)
 			columnFormat[i] = String.class;

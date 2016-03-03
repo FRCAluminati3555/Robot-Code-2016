@@ -10,7 +10,9 @@ import org.aluminati3555.control.motor.MotorGroup;
 import org.aluminati3555.control.motor.MotorGroupSyncronizer;
 import org.aluminati3555.robot.I2C_Request_Addresses.DriveRequests;
 import org.aluminati3555.robot.I2C_Request_Addresses.ShooterRequests;
+import org.aluminati3555.tables.KeyTable;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.SampleRobot;
@@ -18,89 +20,135 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 
 public class Robot extends SampleRobot {
-	
-	// Shooter Constants
-	private static final double FLYWHEEL_TOP_SPEED = 1;
-	private static final double FLYWHEEL_BOTTOM_SPEED = 1;
-	
-	private static final int FLYWHEEL_TOP_INDEX = 1;
-	private static final int FLYWHEEL_BOTTOM_INDEX = 1;
-	private static final int BALL_LOADER_INDEX = 1;
-	
-	// Joystick Constants
-	private static final double JOYSTICK_DEADZONE = 0.05;
-	
-
-	// Shooter Speed Controllers
-	private Relay ballLoader;
-	private I2C_DigitalSensor photogate;
-	
-	private MotorGroup topFlywheel;
-	private MotorGroup bottomFlywheel;
-	private MotorGroupSyncronizer flywheelSync;
-	
-	// Joystick Objetcs
-	private JoystickBase joyL, joyR;
-	private JoystickBase joyOp;
-	
     public Robot() {
-    	joyL  = new LinerJoystick(0, JOYSTICK_DEADZONE);
-    	joyR  = new LinerJoystick(1, JOYSTICK_DEADZONE);
-    	joyOp = new LinerJoystick(2, JOYSTICK_DEADZONE);
-    	
     	initDrive();
     	initBallLoader();
-    	
-    	topFlywheel = new MotorGroup(new I2C_Encoder(ShooterRequests.TopEncoder), 
-    			FLYWHEEL_TOP_SPEED, new Talon(FLYWHEEL_TOP_INDEX));
-    	bottomFlywheel = new MotorGroup(new I2C_Encoder(ShooterRequests.BottomEncoder), 
-    			FLYWHEEL_BOTTOM_SPEED, new Talon(FLYWHEEL_BOTTOM_INDEX));
-    	flywheelSync = new MotorGroupSyncronizer(topFlywheel, bottomFlywheel).setDefaultModifiers(1, -1);
-    
+    	initShooter();
     } 
     
     private double lastJoyL, lastJoyR;
     public void operatorControl() {
         while (isOperatorControl() && isEnabled()) {
-        	// Gets Input from the two drive Joysticks
-        	double joyL_Value = joyL.getValue(LogitechAttack3_Axis.Y);
-        	double joyR_Value = joyR.getValue(LogitechAttack3_Axis.Y);
-
-        	// Determines if the speed has changed
-        	boolean joyL_Changed = lastJoyL != joyL_Value;
-        	boolean joyR_Changed = lastJoyR != joyR_Value;
-        	lastJoyL = joyL_Value; lastJoyR = joyR_Value;
-        	
-        	// If Speed changed update Motors' Speed
-        	if(joyL_Changed || joyR_Changed) {
-        		// Use one to detonate top speed is full-speed
-        		driveSync.setSpeedPercentage(1, joyL_Value, joyR_Value);
-        	}
-        	
-        	// Sets the Speed of the flywheel to the value of the Operator Joystick
-        	flywheelSync.setSpeedPercentage(1, joyOp.getValue(LogitechAttack3_Axis.Y));
-        	
-        	// Turn the ball loader on Forward if the trigger is pressed on the Operator Joystick
-        	if(joyOp.isButtonPressed(LogitechAttack3_Button.Trigger))
-        		ballLoader.set(Value.kForward);
-        	// Turn the ball loader on Backwards if the trigger is pressed on the Operator Joystick
-        	else if(joyOp.isButtonPressed(LogitechAttack3_Button.Top_Lower))
-        		ballLoader.set(Value.kReverse);
-        	// Otherwise turn off the Motor
-        	else ballLoader.set(Value.kOff);
+        	rawUpdate();
         	
         	// Gives Robot time to process input properly
             Timer.delay(0.005);
         }
     }
+    
 /** *********************************************************************************************************************** **\
  * 	- - - - - - - - - - - - - - - - - - - - - - - - - - Update Loop - - - - - - - - - - - - - - - - - - - - - - - - - - - -  *
 \** *********************************************************************************************************************** **/
     
     public void update() {
     	updateBallLoader();
+    	updateShooter();
     	updateDrive();
+    	
+    	updateJoystick();
     }
+    
+    public void rawUpdate() {
+    	// Gets Input from the two drive Joysticks
+    	double joyL_Value = joyL.getValue(LogitechAttack3_Axis.Y);
+    	double joyR_Value = joyR.getValue(LogitechAttack3_Axis.Y);
+
+    	// Determines if the speed has changed
+    	boolean joyL_Changed = lastJoyL != joyL_Value;
+    	boolean joyR_Changed = lastJoyR != joyR_Value;
+    	lastJoyL = joyL_Value; lastJoyR = joyR_Value;
+    	
+    	// If Speed changed update Motors' Speed
+    	if(joyL_Changed || joyR_Changed) {
+    		// Use one to detonate top speed is full-speed
+    		driveSync.setSpeedPercentage(1, joyL_Value, joyR_Value);
+    	}
+    	
+    	// Sets the Speed of the flywheel to the value of the Operator Joystick
+    	flywheelSync.setSpeedPercentage(1, joyOp.getValue(LogitechAttack3_Axis.Y));
+    	
+    	// Turn the ball loader on Forward if the trigger is pressed on the Operator Joystick
+    	if(joyOp.isButtonPressed(LogitechAttack3_Button.Trigger))
+    		ballLoader.set(Value.kForward);
+    	// Turn the ball loader on Backwards if the trigger is pressed on the Operator Joystick
+    	else if(joyOp.isButtonPressed(LogitechAttack3_Button.Top_Lower))
+    		ballLoader.set(Value.kReverse);
+    	// Otherwise turn off the Motor
+    	else ballLoader.set(Value.kOff);
+    }
+
+/** *********************************************************************************************************************** **\
+ * 	- - - - - - - - - - - - - - - - - - - - - - - - - - - Joysick - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  *
+\** *********************************************************************************************************************** **/
+
+	// Joystick Constants
+	private static final double JOYSTICK_DEADZONE = 0.05;
+	
+	// Joystick Objetcs
+	private JoystickBase joyL, joyR;
+	private JoystickBase joyOp;
+	
+    public void intiJoystick() {
+    	joyL  = new LinerJoystick(0, JOYSTICK_DEADZONE);
+    	joyR  = new LinerJoystick(1, JOYSTICK_DEADZONE);
+    	joyOp = new LinerJoystick(2, JOYSTICK_DEADZONE);
+    }
+    
+    public void updateJoystick() {
+    	shooterTop = shooterBottom = joyOp.getValue(LogitechAttack3_Axis.Y);
+    	
+    	tankDriveLeft = joyL.getRawValue(LogitechAttack3_Axis.Y);
+    	tankDriveRight = joyR.getRawValue(LogitechAttack3_Axis.Y);
+    }
+    
+/** *********************************************************************************************************************** **\
+ * 	- - - - - - - - - - - - - - - - - - - - - - - - - - - Shooter - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  *
+\** *********************************************************************************************************************** **/
+
+	// Shooter Constants
+	private static final double FLYWHEEL_TOP_SPEED = 1;
+	private static final double FLYWHEEL_BOTTOM_SPEED = 1;
+	
+	private static final int FLYWHEEL_TOP_INDEX = 1;
+	private static final int FLYWHEEL_BOTTOM_INDEX = 1;
+	
+    private MotorGroup topFlywheel;
+	private MotorGroup bottomFlywheel;
+	private MotorGroupSyncronizer flywheelSync;
+
+    private double shooterTop;
+    private double shooterBottom;
+    
+    private KeyTable shooterDistancesTable;
+    private double shootDistance;
+	
+	public void initShooter() {
+		shooterDistancesTable = new KeyTable("Top Wheel", "Bottom Speed");
+		shooterDistancesTable.load("/shooterTable.csv");
+		
+    	topFlywheel = new MotorGroup(new I2C_Encoder(ShooterRequests.TopEncoder), 
+    			FLYWHEEL_TOP_SPEED, new Talon(FLYWHEEL_TOP_INDEX));
+    	bottomFlywheel = new MotorGroup(new I2C_Encoder(ShooterRequests.BottomEncoder), 
+    			FLYWHEEL_BOTTOM_SPEED, new Talon(FLYWHEEL_BOTTOM_INDEX));
+    	flywheelSync = new MotorGroupSyncronizer(topFlywheel, bottomFlywheel).setDefaultModifiers(1, -1);
+	}
+	
+	public void updateShooter() {
+		shootDistance:
+		if(shootDistance > 0) {
+			double[] speeds = shooterDistancesTable.getClosestRow(shootDistance, 2);
+			
+			if(speeds == null) {
+				DriverStation.reportError("Can not shoot from a distance of: " + shootDistance, false);
+				break shootDistance;
+			}
+			
+			shooterTop = speeds[0];
+			shooterBottom = speeds[1];
+		}
+		
+    	flywheelSync.setSpeedPercentage(1, shooterTop, shooterBottom);
+	}
     
 /** *********************************************************************************************************************** **\
  * 	- - - - - - - - - - - - - - - - - - - - - - - - - - Basic Drive - - - - - - - - - - - - - - - - - - - - - - - - - - - -  *
@@ -159,7 +207,13 @@ public class Robot extends SampleRobot {
 /** *********************************************************************************************************************** **\
  * 	- - - - - - - - - - - - - - - - - - - - - - - - - - Ball Loader - - - - - - - - - - - - - - - - - - - - - - - - - - - -  *
 \** *********************************************************************************************************************** **/
+
+    // Ball Loader Constants
+	private static final int BALL_LOADER_INDEX = 1;
     
+	private Relay ballLoader;
+	private I2C_DigitalSensor photogate;
+	
     private BallLoaderState loaderState;
     private static enum BallLoaderState {
     	Empty, LoadingBall, BallLoaded, EjectingBall, FiringBall;
@@ -197,8 +251,6 @@ public class Robot extends SampleRobot {
     			loaderState = BallLoaderState.BallLoaded;
     			break ballLoading;
     		}
-    		
-    		
     	}
     	
     	//  ------- No Code Beyond Switch -------
