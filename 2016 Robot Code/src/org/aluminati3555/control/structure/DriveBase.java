@@ -36,7 +36,7 @@ public class DriveBase extends BaseStructure {
     private double tankDriveRight;
     
     private static final double WHEEL_RADIUS = 6;
-    private static final double CLOSE_ENOUGH = 0.1;
+    private static final double CLOSE_ENOUGH = 0.1; //when robot drives itself, this is the amount is can be off by
     private static final double TRAVEL_SPEED = 0.5;
     private double travelDistance;
     
@@ -57,7 +57,8 @@ public class DriveBase extends BaseStructure {
 	    	leftSideDrive.getEncoder().reset();
     	}
     
-    	tankDriveLeft = tankDriveRight = TRAVEL_SPEED * (travelDistance > 0 ? 1 : travelDistance < 0 ? -1 : 0);
+//	TODO: FIX
+//    	tankDriveLeft = tankDriveRight = TRAVEL_SPEED * (travelDistance > 0 ? 1 : travelDistance < 0 ? -1 : 0);
     	driveSync.setSpeedPercentage(1, tankDriveLeft, tankDriveRight);
 	}
 

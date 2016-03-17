@@ -20,10 +20,13 @@ public class BallLoader extends BaseStructure {
     	Empty, LoadingBall, BallLoaded, EjectingBall, FiringBall;
     }
     
-    //initializes ball loader objects
-    public void initBallLoader() {
-    	
-    }
+    public BallLoader() {
+		super(10);
+		
+		ballLoader = new Relay(BALL_LOADER_INDEX);
+    	photogate = new I2C_DigitalSensor(ShooterRequests.Photogate1);
+    	loaderState = BallLoaderState.Empty;
+	}
     
     //starts method to load the ball
     public void loadBall() { 
@@ -34,9 +37,9 @@ public class BallLoader extends BaseStructure {
 
    //starts method to eject the ball 
     public void ejectBall() { 
-    	if(loaderState != BallLoaderState.Empty) {
+//    	if(loaderState != BallLoaderState.Empty) {
     		loaderState = BallLoaderState.EjectingBall; 
-    	}
+//    	}
 	}
     
     //starts the method to fire the ball
@@ -46,29 +49,25 @@ public class BallLoader extends BaseStructure {
     	}
 	}
     
+    //starts the method to fire the ball
+    public void stopLoading() { 
+		loaderState = BallLoaderState.Empty;
+	}
+    
     //checks if the loader is empty
     public boolean isBallLoaderEmpty() { return loaderState == BallLoaderState.Empty; }
 	    
-	
-	public BallLoader() {
-		super(10);
-		
-		ballLoader = new Relay(BALL_LOADER_INDEX);
-    	photogate = new I2C_DigitalSensor(ShooterRequests.Photogate1);
-		
-	}
-
 	//updates the ball loader state to the current state
 	protected void updateMethod() {
-    	ballLoading:
-    	if(loaderState == BallLoaderState.LoadingBall) {
-    		if(photogate.isPressed()) {
-    			loaderState = BallLoaderState.BallLoaded;
-    			break ballLoading;
-    		}
-    	}
+//    	ballLoading:
+//    	if(loaderState == BallLoaderState.LoadingBall) {
+//    		if(photogate.isPressed()) {
+//    			loaderState = BallLoaderState.BallLoaded;
+//    			break ballLoading;
+//    		}
+//    	}
     	
-    	  //------- No Code Beyond Switch -------\\
+    	 //------- No Code Beyond Switch -------\\
     	// switch returns from method in all cases
 	    switch (loaderState) {
 			case EjectingBall: 
