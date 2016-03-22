@@ -115,10 +115,6 @@ public class Robot extends SampleRobot {
     
     //checks the value of the joystck and updates it to the robot coorisponding to its purpose
     public void updateJoystick() {
-//    	SmartDashboard.putBoolean("Top_Center", joyOp.isButtonPressed(LogitechAttack3_Button.Top_Center));
-//    	SmartDashboard.putBoolean("Top_Lower", joyOp.isButtonPressed(LogitechAttack3_Button.Top_Lower));
-    	SmartDashboard.putNumber("POV: ", joyOp.getPOV());
-    	
     	if(joyOp.isPOVPressed(180)) {
     		ballLoader.loadBall();
     	} else if(joyOp.isPOVPressed(0)) {
@@ -127,8 +123,10 @@ public class Robot extends SampleRobot {
     		ballLoader.stopLoading();
     	}
     	
-    	shooter.setShooterTop(((joyOp.getValue(LogitechExtreme3D_Axis.Slider) + 1) / 2) * .8);
-    	shooter.setShooterBottom(((joyOp.getValue(LogitechExtreme3D_Axis.Slider) + 1) / 2) * .8);
+    	shooter.setShooterTop((1 - (joyOp.getValue(LogitechExtreme3D_Axis.Slider) + 1) / 2) * .8);
+    	shooter.setShooterBottom((1 - (joyOp.getValue(LogitechExtreme3D_Axis.Slider) + 1) / 2) * .8);
+    	
+    	SmartDashboard.putNumber("Shooter Speed: ", shooter.getFlywheelSync().getMotorGroups()[0].getSpeedPercentage());
     	
     	if(joyOp.isButtonPressed(LogitechExtreme3D_Button.Thumb) && Math.abs(joyOp.getRawValue(LogitechExtreme3D_Axis.Y)) > JOYSTICK_DEADZONE)
     		arm.setAngleMotorSpeed(joyOp.getRawValue(LogitechExtreme3D_Axis.Y));

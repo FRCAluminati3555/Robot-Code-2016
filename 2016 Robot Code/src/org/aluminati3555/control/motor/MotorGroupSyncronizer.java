@@ -32,4 +32,6 @@ public class MotorGroupSyncronizer {
 		for(int i = 0; i < groups.length; i ++)
 			groups[i].setSpeed(speed * associations[i]);
 	} 
+	
+	public MotorGroup[] getMotorGroups() { return groups; }
 }
