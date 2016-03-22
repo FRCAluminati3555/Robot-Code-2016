@@ -24,6 +24,8 @@ public abstract class JoystickBase {
 	public boolean isButtonPressed(Button button) { 
 		return joystick.getRawButton(button.getIndex());
 	}
-	
+
+	public boolean isPOVPressed(int angle) { return joystick.getPOV() == angle; }
+	public int getPOV() { return joystick.getPOV(); }
 	public Joystick getJoystick() { return joystick; }
 }

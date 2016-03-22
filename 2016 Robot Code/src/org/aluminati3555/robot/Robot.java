@@ -1,6 +1,9 @@
 package org.aluminati3555.robot;
 
+import org.aluminati3555.control.input.JoysickMappings.LogitechAttack3_Axis;
 import org.aluminati3555.control.input.JoysickMappings.LogitechAttack3_Button;
+import org.aluminati3555.control.input.JoysickMappings.LogitechExtreme3D_Axis;
+import org.aluminati3555.control.input.JoysickMappings.LogitechExtreme3D_Button;
 import org.aluminati3555.control.input.JoystickBase;
 import org.aluminati3555.control.input.LinerJoystick;
 import org.aluminati3555.control.structure.Arm;
@@ -100,39 +103,41 @@ public class Robot extends SampleRobot {
 	private static final double JOYSTICK_DEADZONE = 0.05;
 	
 	// Joystick Objetcs
-//	private JoystickBase joyL, joyR;
+	private JoystickBase joyL, joyR;
 	private JoystickBase joyOp;
 	
 	//initializes joystic objects
     public void intiJoystick() {
-//    	joyL  = new LinerJoystick(0, JOYSTICK_DEADZONE);
-//    	joyR  = new LinerJoystick(1, JOYSTICK_DEADZONE);
+    	joyL  = new LinerJoystick(0, JOYSTICK_DEADZONE);
+    	joyR  = new LinerJoystick(1, JOYSTICK_DEADZONE);
     	joyOp = new LinerJoystick(2, JOYSTICK_DEADZONE);
     }
     
     //checks the value of the joystck and updates it to the robot coorisponding to its purpose
     public void updateJoystick() {
-    	SmartDashboard.putBoolean("Top_Center", joyOp.isButtonPressed(LogitechAttack3_Button.Top_Center));
-    	SmartDashboard.putBoolean("Top_Lower", joyOp.isButtonPressed(LogitechAttack3_Button.Top_Lower));
+//    	SmartDashboard.putBoolean("Top_Center", joyOp.isButtonPressed(LogitechAttack3_Button.Top_Center));
+//    	SmartDashboard.putBoolean("Top_Lower", joyOp.isButtonPressed(LogitechAttack3_Button.Top_Lower));
+    	SmartDashboard.putNumber("POV: ", joyOp.getPOV());
     	
-    	if(joyOp.isButtonPressed(LogitechAttack3_Button.Top_Center)) {
+    	if(joyOp.isPOVPressed(180)) {
     		ballLoader.loadBall();
-    	} else if(joyOp.isButtonPressed(LogitechAttack3_Button.Top_Lower)) {
+    	} else if(joyOp.isPOVPressed(0)) {
     		ballLoader.ejectBall();
     	} else {
     		ballLoader.stopLoading();
     	}
     	
-//    	shooter.setShooterTop(joyOp.getValue(LogitechAttack3_Axis.Y));
-//    	shooter.setShooterBottom(joyOp.getValue(LogitechAttack3_Axis.Y));
-//    	
-//    	arm.setAngleMotorSpeed(joyOp.isButtonPressed(LogitechAttack3_Button.Top_Left) ? 0.5 : joyOp.isButtonPressed(LogitechAttack3_Button.Top_Right) ? -.5 : 0);
-//    	
-//    	arm.setLeftArmSpeed(joyOp.isButtonPressed(LogitechAttack3_Button.Bottom_Left_Front) ? 0.5 : joyOp.isButtonPressed(LogitechAttack3_Button.Bottom_Left_Back)  ? -.5 : 0);
-//    	arm.setRightArmSpeed(joyOp.isButtonPressed(LogitechAttack3_Button.Bottom_Right_Front) ? 0.5 : joyOp.isButtonPressed(LogitechAttack3_Button.Bottom_Right_Back) ? -.5 : 0);
+    	shooter.setShooterTop(((joyOp.getValue(LogitechExtreme3D_Axis.Slider) + 1) / 2) * .8);
+    	shooter.setShooterBottom(((joyOp.getValue(LogitechExtreme3D_Axis.Slider) + 1) / 2) * .8);
     	
-//    	driveBase.setTankDriveLeft(joyL.getRawValue(LogitechAttack3_Axis.Y));
-//    	driveBase.setTankDriveRight(joyR.getRawValue(LogitechAttack3_Axis.Y));
+    	if(joyOp.isButtonPressed(LogitechExtreme3D_Button.Thumb) && Math.abs(joyOp.getRawValue(LogitechExtreme3D_Axis.Y)) > JOYSTICK_DEADZONE)
+    		arm.setAngleMotorSpeed(joyOp.getRawValue(LogitechExtreme3D_Axis.Y));
+    	
+    	arm.setLeftArmSpeed(joyOp.isButtonPressed(LogitechAttack3_Button.Bottom_Right_Front) ? 0.5 : joyOp.isButtonPressed(LogitechAttack3_Button.Bottom_Left_Front) ? -.5 : 0);
+    	arm.setRightArmSpeed(joyOp.isButtonPressed(LogitechAttack3_Button.Bottom_Right_Front) ? 0.5 : joyOp.isButtonPressed(LogitechAttack3_Button.Bottom_Left_Front) ? -.5 : 0);
+    	
+    	driveBase.setTankDriveLeft(joyL.getRawValue(LogitechAttack3_Axis.Y));
+    	driveBase.setTankDriveRight(joyR.getRawValue(LogitechAttack3_Axis.Y));
     }
     
 /** *********************************************************************************************************************** **\
