@@ -10,6 +10,7 @@ import org.aluminati3555.control.structure.Arm;
 import org.aluminati3555.control.structure.BallLoader;
 import org.aluminati3555.control.structure.DriveBase;
 import org.aluminati3555.control.structure.Shooter;
+import org.aluminati3555.vision.CrossPlacer;
 
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -22,11 +23,15 @@ public class Robot extends SampleRobot {
 	private Shooter shooter;
 	private Arm arm;
 	
+	private CrossPlacer crossPlacer;
+	
     public Robot() {
     	driveBase = new DriveBase(); //creates talon objects with the index
     	ballLoader = new BallLoader(); //creates i2c digital sensor and uses the photogate
     	shooter = new Shooter(); // creates key table and requests all of the neccecary encoders for the shooter
     	arm = new Arm();
+    	
+    	crossPlacer = new CrossPlacer();
     	autonomousInit();
     	intiJoystick();
     } 
@@ -46,6 +51,8 @@ public class Robot extends SampleRobot {
     	ballLoader.disable();
     	shooter.disable();
     	arm.disable();
+    	
+    	crossPlacer.disable();
     }
     
 /** *********************************************************************************************************************** **\
@@ -61,6 +68,8 @@ public class Robot extends SampleRobot {
     	shooter.update(delta);
     	ballLoader.update(delta);
     	arm.update(delta);
+    	
+    	crossPlacer.update(joyOp.isButtonPressed(LogitechExtreme3D_Button.Button_9) ? joyOp.getJoystick() : null);
     	
     	updateJoystick(); //updates the value of the Y axis value of the joystick
     	lastTime = System.currentTimeMillis();
