@@ -9,10 +9,7 @@ public abstract class BaseStructure {
 	}
 	
 	public final void update(int deltaMilli) {
-//		sumDelay += deltaMilli;
-//		if(sumDelay >= updateDelayMilli) {
 			sumDelay = 0; updateMethod();
-//		}
 	}
 	
 	protected abstract void updateMethod();

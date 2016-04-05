@@ -60,6 +60,7 @@ public class DriveBase extends BaseStructure {
 //	TODO: FIX
 //    	tankDriveLeft = tankDriveRight = TRAVEL_SPEED * (travelDistance > 0 ? 1 : travelDistance < 0 ? -1 : 0);
     	driveSync.setSpeedPercentage(1, tankDriveLeft, tankDriveRight);
+    	
 	}
 
 	public void disable() {

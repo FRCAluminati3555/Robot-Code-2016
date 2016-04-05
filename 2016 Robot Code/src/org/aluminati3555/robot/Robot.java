@@ -34,6 +34,10 @@ public class Robot extends SampleRobot {
     	crossPlacer = new CrossPlacer();
     	autonomousInit();
     	intiJoystick();
+    	
+		autonomousInit();
+		
+		SmartDashboard.putBoolean("Auto On: ", false);
     } 
     
 //    private double lastJoyL, lastJoyR;
@@ -47,12 +51,12 @@ public class Robot extends SampleRobot {
     }
     
     public void disabled() {
-    	driveBase.disable();
-    	ballLoader.disable();
-    	shooter.disable();
-    	arm.disable();
-    	
-    	crossPlacer.disable();
+//    	driveBase.disable();
+//    	ballLoader.disable();
+//    	shooter.disable();
+//    	arm.disable();
+//    	
+//    	crossPlacer.disable();
     }
     
 /** *********************************************************************************************************************** **\
@@ -133,18 +137,24 @@ public class Robot extends SampleRobot {
     	}
     	
     	shooter.setShooterTop((1 - (joyOp.getValue(LogitechExtreme3D_Axis.Slider) + 1) / 2) * .8);
-    	shooter.setShooterBottom((1 - (joyOp.getValue(LogitechExtreme3D_Axis.Slider) + 1) / 2) * .8);
+    	shooter.setShooterBottom((1 - (joyOp.getValue(LogitechExtreme3D_Axis.Slider) + 1) / 2) * -.8);
+    	
+    	if(joyOp.isButtonPressed(LogitechExtreme3D_Button.Button_11) || joyOp.isButtonPressed(LogitechExtreme3D_Button.Button_12))
+    		arm.setHighGear(joyOp.isButtonPressed(LogitechExtreme3D_Button.Button_11));
     	
     	SmartDashboard.putNumber("Shooter Speed: ", shooter.getFlywheelSync().getMotorGroups()[0].getSpeedPercentage());
+    	SmartDashboard.putString("Arm: ", (joyOp.isButtonPressed(LogitechExtreme3D_Button.Thumb) && Math.abs(joyOp.getRawValue(LogitechExtreme3D_Axis.Y)) > JOYSTICK_DEADZONE) + " Value: " + (joyOp.getRawValue(LogitechExtreme3D_Axis.Y) / 2));
     	
     	if(joyOp.isButtonPressed(LogitechExtreme3D_Button.Thumb) && Math.abs(joyOp.getRawValue(LogitechExtreme3D_Axis.Y)) > JOYSTICK_DEADZONE)
     		arm.setAngleMotorSpeed(joyOp.getRawValue(LogitechExtreme3D_Axis.Y));
+    	else
+    		arm.setAngleMotorSpeed(0);
     	
-    	arm.setLeftArmSpeed(joyOp.isButtonPressed(LogitechAttack3_Button.Bottom_Right_Front) ? 0.5 : joyOp.isButtonPressed(LogitechAttack3_Button.Bottom_Left_Front) ? -.5 : 0);
-    	arm.setRightArmSpeed(joyOp.isButtonPressed(LogitechAttack3_Button.Bottom_Right_Front) ? 0.5 : joyOp.isButtonPressed(LogitechAttack3_Button.Bottom_Left_Front) ? -.5 : 0);
+    	arm.setLeftArmSpeed(joyOp.isButtonPressed(LogitechAttack3_Button.Button_8) ? 0.5 : joyOp.isButtonPressed(LogitechAttack3_Button.Button_7) ? -.5 : 0);
+    	arm.setRightArmSpeed(joyOp.isButtonPressed(LogitechAttack3_Button.Button_10) ? 0.5 : joyOp.isButtonPressed(LogitechAttack3_Button.Button_9) ? -.5 : 0);
     	
-    	driveBase.setTankDriveLeft(joyL.getRawValue(LogitechAttack3_Axis.Y));
-    	driveBase.setTankDriveRight(joyR.getRawValue(LogitechAttack3_Axis.Y));
+    	driveBase.setTankDriveLeft(-joyL.getRawValue(LogitechAttack3_Axis.Y));
+    	driveBase.setTankDriveRight(-joyR.getRawValue(LogitechAttack3_Axis.Y));
     }
     
 /** *********************************************************************************************************************** **\
@@ -159,7 +169,7 @@ public class Robot extends SampleRobot {
     	autonmusChooser.addDefault(AutonomousOptions.None.toString(), AutonomousOptions.None);
     	for(AutonomousOptions options : AutonomousOptions.values()) {
     		if(options != AutonomousOptions.None)
-    	    	autonmusChooser.addDefault(options.toString(), options);
+    	    	autonmusChooser.addObject(options.toString(), options);
     	}
 	}
 	
@@ -168,45 +178,46 @@ public class Robot extends SampleRobot {
 		Dirve_25$prc, Dirve_50$prc, Dirve_75$prc, Dirve_100$prc;
 		
 		public String toString() {
-			String raw = super.toString();
-			String full = "";
-			
-			int escapedAt = -1;
-			String escapeString = "";
-			for(int i = 0; i < raw.length(); i ++) {
-				char c = raw.charAt(i);
-				
-				if(escapedAt != -1) {
-					escapeString += c;
-					
-					if(escapedAt - i == 3) {
-						escapedAt = -1;
-						full += escape(escapeString);
-					}
-					
-					continue;
-				}
-				
-				
-				if(c == '_') {
-					full += " ";
-					continue;
-				}
-				
-				if(c == '$') {
-					escapedAt = i;
-					escapeString = "";
-					continue;
-				}
-				
-				full += c;
-			}
-			
-			if(escapedAt != -1) {
-				full += escape(escapeString);
- 			}
-			
-			return full;		
+			return super.toString();
+//			String raw = super.toString();
+//			String full = "";
+//			
+//			int escapedAt = -1;
+//			String escapeString = "";
+//			for(int i = 0; i < raw.length(); i ++) {
+//				char c = raw.charAt(i);
+//				
+//				if(escapedAt != -1) {
+//					escapeString += c;
+//					
+//					if(escapedAt - i == 3) {
+//						escapedAt = -1;
+//						full += escape(escapeString);
+//					}
+//					
+//					continue;
+//				}
+//				
+//				
+//				if(c == '_') {
+//					full += " ";
+//					continue;
+//				}
+//				
+//				if(c == '$') {
+//					escapedAt = i;
+//					escapeString = "";
+//					continue;
+//				}
+//				
+//				full += c;
+//			}
+//			
+//			if(escapedAt != -1) {
+//				full += escape(escapeString);
+// 			}
+//			
+//			return full;		
 		}
 		
 		public String escape(String escapeChars) {
@@ -224,36 +235,45 @@ public class Robot extends SampleRobot {
 		driveBase.setTankDriveLeft(0);
 		driveBase.setTankDriveRight(0);
 		
-		switch((AutonomousOptions) autonmusChooser.getSelected()) {
-			case Dirve_25$prc:
-				autonomousDrive(.25);
-			break;
-				
-			case Dirve_50$prc:
-				autonomousDrive(.5);
-			break;
-				
-			case Dirve_75$prc: 
-				autonomousDrive(.75);
-			break;
-			
-			case Dirve_100$prc:
-				autonomousDrive(1);
-			break;
-				
-			case None:
-			default:
-				break;
-		}
+//		if(SmartDashboard.getBoolean("Auto On: "))
+			autonomousDrive(-.5);
+		
+//		switch(AutonomousOptions.Dirve_25$prc){//(AutonomousOptions) autonmusChooser.getSelected()) {
+//			case Dirve_25$prc:
+//				autonomousDrive(.25);
+//			break;
+//				
+//			case Dirve_50$prc:
+//				autonomousDrive(.5);
+//			break;
+//				
+//			case Dirve_75$prc: 
+//				autonomousDrive(.75);
+//			break;
+//			
+//			case Dirve_100$prc:
+//				autonomousDrive(1);
+//			break;
+//				
+//			case None:
+//			default:
+//				break;
+//		}
 	}
 	
 	public void autonomousDrive(double percentage) {
 		driveBase.setTankDriveLeft(percentage);
 		driveBase.setTankDriveRight(percentage);
 		
-		Timer.delay(3);
+		long startTime = System.currentTimeMillis();
+		while(System.currentTimeMillis() - (2400 + startTime) < 0)
+			driveBase.update(0);
 		
 		driveBase.setTankDriveLeft(0);
 		driveBase.setTankDriveRight(0);
+		Timer.delay(0.01);
+		driveBase.update(0);
 	}
+	
+	
 }

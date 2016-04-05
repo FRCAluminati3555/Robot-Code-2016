@@ -6,6 +6,7 @@ import org.aluminati3555.control.motor.MotorGroupSyncronizer;
 import org.aluminati3555.robot.I2C_Request_Addresses.ShooterRequests;
 
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.VictorSP;
 
 public class Shooter extends BaseStructure {
 
@@ -34,7 +35,7 @@ public class Shooter extends BaseStructure {
 //		shooterDistancesTable.load("/shooterTable.csv");
 		
     	topFlywheel = new MotorGroup(new I2C_Encoder(ShooterRequests.TopEncoder), 
-    			FLYWHEEL_TOP_SPEED, new Talon(FLYWHEEL_TOP_INDEX));
+    			FLYWHEEL_TOP_SPEED, new VictorSP(FLYWHEEL_TOP_INDEX));
     	bottomFlywheel = new MotorGroup(new I2C_Encoder(ShooterRequests.BottomEncoder), 
     			FLYWHEEL_BOTTOM_SPEED, new Talon(FLYWHEEL_BOTTOM_INDEX));
     	flywheelSync = new MotorGroupSyncronizer(topFlywheel, bottomFlywheel).setDefaultModifiers(1, -1);
